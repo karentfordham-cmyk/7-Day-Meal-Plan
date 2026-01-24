@@ -5,252 +5,362 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>7‑Day Meal Plan</title>
 <style>
-  :root { --bg:#0b1020; --card:#121a33; --text:#eef2ff; --muted:#a8b0d6; --accent:#7dd3fc; --ok:#86efac; }
-  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-         background:linear-gradient(180deg,var(--bg),#070a14); color:var(--text); }
-  header { position:sticky; top:0; padding:16px; background:rgba(11,16,32,.75); backdrop-filter: blur(8px);
-            border-bottom:1px solid rgba(255,255,255,.08); }
-  h1 { margin:0 0 6px; font-size:18px; }
-  p { margin:0; color:var(--muted); font-size:13px; line-height:1.35; }
-  main { max-width:720px; margin:0 auto; padding:12px 12px 30px; }
-  .card { background:rgba(18,26,51,.92); border:1px solid rgba(255,255,255,.08); border-radius:16px;
-           padding:12px; margin:10px 0; box-shadow:0 10px 30px rgba(0,0,0,.25); }
-  h2 { margin:0 0 10px; font-size:15px; color:var(--accent); }
-  .row { display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-top:1px dashed rgba(255,255,255,.12); }
-  .row:first-of-type { border-top:none; }
-  .name { font-size:13px; line-height:1.25; max-width:70%; }
-  .meta { font-size:13px; color:var(--muted); white-space:nowrap; }
-  .total { margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,.10);
-            display:flex; justify-content:space-between; font-size:13px; }
-  .total strong { color:var(--ok); }
-  footer { padding:14px 16px; color:var(--muted); font-size:12px; text-align:center; border-top:1px solid rgba(255,255,255,.08); }
+:root{--bg:#0b1020;--card:#121a33;--text:#eef2ff;--muted:#a8b0d6;--accent:#7dd3fc;--ok:#86efac;--line:rgba(255,255,255,.10);}
+*{box-sizing:border-box;}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#070a14);color:var(--text);}
+header{position:sticky;top:0;z-index:5;padding:14px 14px 10px;background:rgba(11,16,32,.80);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+h1{margin:0 0 6px;font-size:18px;letter-spacing:.2px;}
+.sub{margin:0;color:var(--muted);font-size:12.5px;line-height:1.35;}
+nav{display:flex;gap:8px;margin-top:10px;}
+.tab{flex:1;padding:9px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.10);background:rgba(18,26,51,.55);color:var(--text);font-size:13px;font-weight:600;}
+.tab[aria-selected="true"]{border-color:rgba(125,211,252,.55);background:rgba(125,211,252,.12);color:var(--accent);}
+main{max-width:760px;margin:0 auto;padding:12px 12px 28px;}
+.card{background:rgba(18,26,51,.92);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px;margin:10px 0;box-shadow:0 10px 30px rgba(0,0,0,.25);}
+h2{margin:0 0 10px;font-size:15px;color:var(--accent);}
+.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px dashed rgba(255,255,255,.12);}
+.row:first-of-type{border-top:none;}
+.name{font-size:13px;line-height:1.25;max-width:72%;}
+.num{color:var(--muted);font-weight:600;}
+.meta{font-size:13px;color:var(--muted);white-space:nowrap;}
+.total{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:13px;}
+.total strong{color:var(--ok);}
+.panel{display:none;}
+.panel.active{display:block;}
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(18,26,51,.55);margin:8px 0;font-size:13px;line-height:1.25;}
+.check input{margin-top:2px;transform:scale(1.1);}
+.hint{color:var(--muted);font-size:12.5px;line-height:1.35;margin:0 0 10px;}
+details.recipe{border:1px solid rgba(255,255,255,.08);background:rgba(18,26,51,.55);border-radius:16px;padding:10px 12px;margin:10px 0;}
+details.recipe summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:center;}
+details.recipe summary::-webkit-details-marker{display:none;}
+.rname{font-size:13.5px;font-weight:700;line-height:1.25;}
+.rtag{font-size:12px;color:var(--muted);white-space:nowrap;}
+.rbody{margin-top:10px;border-top:1px dashed rgba(255,255,255,.12);padding-top:10px;}
+.rbody h4{margin:10px 0 6px;font-size:13px;color:var(--accent);}
+.rbody ul,.rbody ol{margin:0 0 6px 18px;padding:0;color:var(--text);}
+.rbody li{margin:4px 0;font-size:13px;line-height:1.25;}
+footer{padding:14px 16px 20px;color:var(--muted);font-size:12px;text-align:center;border-top:1px solid rgba(255,255,255,.08);}
 </style>
 </head>
 <body>
 <header>
   <h1>7‑Day High‑Protein Meal Plan</h1>
-  <p>2 meals + 2 snacks per day. Daily target: ≤ 1,100 kcal and ≥ 120 g protein (estimates).</p>
+  <p class="sub">2 meals + 2 snacks per day. Target: ≤ 1,100 kcal and ≥ 120 g protein (estimates).</p>
+  <nav role="tablist" aria-label="Meal plan sections">
+    <button class="tab" role="tab" aria-selected="true" data-target="plan">Plan</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="shopping">Shopping</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="recipes">Recipes</button>
+  </nav>
 </header>
+
 <main>
-  
+  <section id="panel-plan" class="panel active">
+    
     <section class="card">
       <h2>Day 1</h2>
       
-    <div class="row">
-      <div class="name">Tempeh &amp; Kale–Mushroom Stir-Fry</div>
-      <div class="meta">316 kcal • 31g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup</div>
-      <div class="meta">198 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Tempeh Mince Tomato–Spinach Skillet with Cauli-Rice</div>
-      <div class="meta">358 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Microwave Chocolate Protein Brownie Mug</div>
-      <div class="meta">165 kcal • 27g protein</div>
-    </div>
-    
-      <div class="total">
-        <div>Total</div><div><strong>1037 kcal</strong> • <strong>122g protein</strong></div>
-      </div>
+        <div class="row">
+          <div class="name">Tempeh &amp; Kale–Mushroom Stir-Fry <span class="num">(1)</span></div>
+          <div class="meta">316 kcal • 31g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup <span class="num">(2)</span></div>
+          <div class="meta">198 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Tempeh Mince Tomato–Spinach Skillet with Cauli-Rice <span class="num">(3)</span></div>
+          <div class="meta">358 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Microwave Chocolate Protein Brownie Mug <span class="num">(4)</span></div>
+          <div class="meta">165 kcal • 27g protein</div>
+        </div>
+      <div class="total"><div>Daily total</div><div><strong>1037 kcal</strong> • <strong>122g protein</strong></div></div>
     </section>
-    
+
     <section class="card">
       <h2>Day 2</h2>
       
-    <div class="row">
-      <div class="name">Garlic–Soy Tofu &amp; Black Bean Bowl</div>
-      <div class="meta">356 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup</div>
-      <div class="meta">198 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Tempeh Mince Tomato–Spinach Skillet with Cauli-Rice</div>
-      <div class="meta">358 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Microwave Chocolate Protein Brownie Mug</div>
-      <div class="meta">165 kcal • 27g protein</div>
-    </div>
-    
-      <div class="total">
-        <div>Total</div><div><strong>1077 kcal</strong> • <strong>123g protein</strong></div>
-      </div>
+        <div class="row">
+          <div class="name">Garlic–Soy Tofu &amp; Black Bean Bowl <span class="num">(1)</span></div>
+          <div class="meta">356 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup <span class="num">(2)</span></div>
+          <div class="meta">198 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Tempeh Mince Tomato–Spinach Skillet with Cauli-Rice <span class="num">(3)</span></div>
+          <div class="meta">358 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Microwave Chocolate Protein Brownie Mug <span class="num">(4)</span></div>
+          <div class="meta">165 kcal • 27g protein</div>
+        </div>
+      <div class="total"><div>Daily total</div><div><strong>1077 kcal</strong> • <strong>123g protein</strong></div></div>
     </section>
-    
+
     <section class="card">
       <h2>Day 3</h2>
       
-    <div class="row">
-      <div class="name">Tempeh &amp; Kale–Mushroom Stir-Fry</div>
-      <div class="meta">316 kcal • 31g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup</div>
-      <div class="meta">198 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Chickpea–Beet Crunch Salad with Cottage Cheese</div>
-      <div class="meta">410 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Microwave Chocolate Protein Brownie Mug</div>
-      <div class="meta">165 kcal • 27g protein</div>
-    </div>
-    
-      <div class="total">
-        <div>Total</div><div><strong>1089 kcal</strong> • <strong>122g protein</strong></div>
-      </div>
+        <div class="row">
+          <div class="name">Tempeh &amp; Kale–Mushroom Stir-Fry <span class="num">(1)</span></div>
+          <div class="meta">316 kcal • 31g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup <span class="num">(2)</span></div>
+          <div class="meta">198 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Chickpea–Beet Crunch Salad with Cottage Cheese <span class="num">(3)</span></div>
+          <div class="meta">410 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Microwave Chocolate Protein Brownie Mug <span class="num">(4)</span></div>
+          <div class="meta">165 kcal • 27g protein</div>
+        </div>
+      <div class="total"><div>Daily total</div><div><strong>1089 kcal</strong> • <strong>122g protein</strong></div></div>
     </section>
-    
+
     <section class="card">
       <h2>Day 4</h2>
       
-    <div class="row">
-      <div class="name">Tempeh &amp; Kale–Mushroom Stir-Fry</div>
-      <div class="meta">316 kcal • 31g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup</div>
-      <div class="meta">198 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">10‑Minute Lentil–Tomato–Spinach Tofu Stew</div>
-      <div class="meta">411 kcal • 34g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Microwave Chocolate Protein Brownie Mug</div>
-      <div class="meta">165 kcal • 27g protein</div>
-    </div>
-    
-      <div class="total">
-        <div>Total</div><div><strong>1090 kcal</strong> • <strong>124g protein</strong></div>
-      </div>
+        <div class="row">
+          <div class="name">Tempeh &amp; Kale–Mushroom Stir-Fry <span class="num">(1)</span></div>
+          <div class="meta">316 kcal • 31g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup <span class="num">(2)</span></div>
+          <div class="meta">198 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">10‑Minute Lentil–Tomato–Spinach Tofu Stew <span class="num">(3)</span></div>
+          <div class="meta">411 kcal • 34g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Microwave Chocolate Protein Brownie Mug <span class="num">(4)</span></div>
+          <div class="meta">165 kcal • 27g protein</div>
+        </div>
+      <div class="total"><div>Daily total</div><div><strong>1090 kcal</strong> • <strong>124g protein</strong></div></div>
     </section>
-    
+
     <section class="card">
       <h2>Day 5</h2>
       
-    <div class="row">
-      <div class="name">Tempeh &amp; Kale–Mushroom Stir-Fry</div>
-      <div class="meta">316 kcal • 31g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup</div>
-      <div class="meta">198 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Garlic–Soy Tofu &amp; Black Bean Bowl</div>
-      <div class="meta">356 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Banana Protein ‘Nice‑Cream’</div>
-      <div class="meta">221 kcal • 28g protein</div>
-    </div>
-    
-      <div class="total">
-        <div>Total</div><div><strong>1091 kcal</strong> • <strong>124g protein</strong></div>
-      </div>
+        <div class="row">
+          <div class="name">Tempeh &amp; Kale–Mushroom Stir-Fry <span class="num">(1)</span></div>
+          <div class="meta">316 kcal • 31g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup <span class="num">(2)</span></div>
+          <div class="meta">198 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Garlic–Soy Tofu &amp; Black Bean Bowl <span class="num">(3)</span></div>
+          <div class="meta">356 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Banana Protein ‘Nice‑Cream’ <span class="num">(4)</span></div>
+          <div class="meta">221 kcal • 28g protein</div>
+        </div>
+      <div class="total"><div>Daily total</div><div><strong>1091 kcal</strong> • <strong>124g protein</strong></div></div>
     </section>
-    
+
     <section class="card">
       <h2>Day 6</h2>
       
-    <div class="row">
-      <div class="name">Tempeh Mince Tomato–Spinach Skillet with Cauli-Rice</div>
-      <div class="meta">358 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup</div>
-      <div class="meta">198 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Garlic–Soy Tofu &amp; Black Bean Bowl</div>
-      <div class="meta">356 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Microwave Chocolate Protein Brownie Mug</div>
-      <div class="meta">165 kcal • 27g protein</div>
-    </div>
-    
-      <div class="total">
-        <div>Total</div><div><strong>1077 kcal</strong> • <strong>123g protein</strong></div>
-      </div>
+        <div class="row">
+          <div class="name">Tempeh Mince Tomato–Spinach Skillet with Cauli-Rice <span class="num">(1)</span></div>
+          <div class="meta">358 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup <span class="num">(2)</span></div>
+          <div class="meta">198 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Garlic–Soy Tofu &amp; Black Bean Bowl <span class="num">(3)</span></div>
+          <div class="meta">356 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Microwave Chocolate Protein Brownie Mug <span class="num">(4)</span></div>
+          <div class="meta">165 kcal • 27g protein</div>
+        </div>
+      <div class="total"><div>Daily total</div><div><strong>1077 kcal</strong> • <strong>123g protein</strong></div></div>
     </section>
-    
+
     <section class="card">
       <h2>Day 7</h2>
       
-    <div class="row">
-      <div class="name">Tempeh &amp; Kale–Mushroom Stir-Fry</div>
-      <div class="meta">316 kcal • 31g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup</div>
-      <div class="meta">198 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Tempeh Mince Tomato–Spinach Skillet with Cauli-Rice</div>
-      <div class="meta">358 kcal • 32g protein</div>
-    </div>
-    
-
-    <div class="row">
-      <div class="name">Banana Protein ‘Nice‑Cream’</div>
-      <div class="meta">221 kcal • 28g protein</div>
-    </div>
-    
-      <div class="total">
-        <div>Total</div><div><strong>1091 kcal</strong> • <strong>123g protein</strong></div>
-      </div>
+        <div class="row">
+          <div class="name">Tempeh &amp; Kale–Mushroom Stir-Fry <span class="num">(1)</span></div>
+          <div class="meta">316 kcal • 31g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Mango Jelly Protein ‘Cheesecake’ Cup <span class="num">(2)</span></div>
+          <div class="meta">198 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Tempeh Mince Tomato–Spinach Skillet with Cauli-Rice <span class="num">(3)</span></div>
+          <div class="meta">358 kcal • 32g protein</div>
+        </div>
+        <div class="row">
+          <div class="name">Banana Protein ‘Nice‑Cream’ <span class="num">(4)</span></div>
+          <div class="meta">221 kcal • 28g protein</div>
+        </div>
+      <div class="total"><div>Daily total</div><div><strong>1091 kcal</strong> • <strong>123g protein</strong></div></div>
     </section>
-    
+  </section>
+
+  <section id="panel-shopping" class="panel">
+    <div class="card">
+      <h2>Shopping list (restock checklist)</h2>
+      <p class="hint">You asked to use only the ingredients you already have. This is a <strong>restock checklist</strong> for the week—tick what you need. Ticks save on your phone automatically.</p>
+      <label class="check"><input type="checkbox" data-key="yoghurt_hp"/><span>High protein yoghurt (Woolworths) – ensure ~1.4 kg for the week</span></label>
+<label class="check"><input type="checkbox" data-key="yoghurt_greek"/><span>Greek yoghurt (Woolworths) – ensure ~700 g for the week</span></label>
+<label class="check"><input type="checkbox" data-key="protein_powder"/><span>Nature’s Way plant-based protein (choc) – ensure ~350 g for the week</span></label>
+<label class="check"><input type="checkbox" data-key="jelly"/><span>Lite Jelly (mango/passionfruit) – 3–4 sachets</span></label>
+<label class="check"><input type="checkbox" data-key="berries"/><span>Frozen mixed berries – ~700 g</span></label>
+<label class="check"><input type="checkbox" data-key="banana"/><span>Frozen banana chunks – ~600 g</span></label>
+<label class="check"><input type="checkbox" data-key="tempeh_blocks"/><span>Tempeh blocks – ~3 x 200 g</span></label>
+<label class="check"><input type="checkbox" data-key="tempeh_mince"/><span>Tempeh mince – ~2 x 250 g</span></label>
+<label class="check"><input type="checkbox" data-key="tofu"/><span>Tofu – ~2 x 450 g</span></label>
+<label class="check"><input type="checkbox" data-key="black_beans"/><span>Canned black beans – 2 cans</span></label>
+<label class="check"><input type="checkbox" data-key="chickpeas"/><span>Canned chickpeas – 2 cans</span></label>
+<label class="check"><input type="checkbox" data-key="lentils"/><span>Canned lentils – 1–2 cans</span></label>
+<label class="check"><input type="checkbox" data-key="diced_tomatoes"/><span>Canned diced tomatoes – 2 cans</span></label>
+<label class="check"><input type="checkbox" data-key="spinach"/><span>Baby spinach – 2 bags</span></label>
+<label class="check"><input type="checkbox" data-key="kale"/><span>Kale – 2 bunches</span></label>
+<label class="check"><input type="checkbox" data-key="mushrooms"/><span>Mushrooms – 2 punnets</span></label>
+<label class="check"><input type="checkbox" data-key="cauliflower"/><span>Cauliflower – 2 heads (for quick ‘cauli-rice’)</span></label>
+<label class="check"><input type="checkbox" data-key="red_cabbage"/><span>Red cabbage – 1 large (salads + slaw)</span></label>
+<label class="check"><input type="checkbox" data-key="beetroot"/><span>Canned beetroot slices – 1 can</span></label>
+<label class="check"><input type="checkbox" data-key="cottage_cheese"/><span>Cottage cheese – 1 tub</span></label>
+<label class="check"><input type="checkbox" data-key="garlic"/><span>Garlic (jar) – ensure available</span></label>
+<label class="check"><input type="checkbox" data-key="soy_sauce"/><span>Soy sauce – ensure available</span></label>
+<label class="check"><input type="checkbox" data-key="stock_powder"/><span>Stock powder – ensure available</span></label>
+<label class="check"><input type="checkbox" data-key="sauces"/><span>Pizza sauce / basil pesto – ensure available (flavour boosts)</span></label>
+<label class="check"><input type="checkbox" data-key="baking_powder"/><span>Baking powder – ensure available (for mug brownie)</span></label>
+<label class="check"><input type="checkbox" data-key="cocoa"/><span>Cocoa / dark chocolate – ensure available (for brownie flavour)</span></label>
+    </div>
+  </section>
+
+  <section id="panel-recipes" class="panel">
+    <div class="card">
+      <h2>Recipes</h2>
+      <p class="hint">All recipes are vegetarian, ≤ 20 minutes active time, and use only ingredients shown in your photos (water/ice not counted).</p>
+      <details class="recipe" id="tempeh--kalemushroom-stirfry">
+        <summary><span class="rname">Tempeh &amp; Kale–Mushroom Stir-Fry</span><span class="rtag">15 min • serves 1</span></summary>
+        <div class="rbody">
+          <h4>Ingredients</h4>
+          <ul><li>Tempeh 200g (cubed)</li><li>Kale 2 handfuls (chopped)</li><li>Mushrooms 200g (sliced)</li><li>Minced garlic 1 tsp</li><li>Soy sauce 1 tbsp</li><li>Stock powder 1/2 tsp + 2 tbsp water</li></ul>
+          <h4>Method</h4>
+          <ol><li>Pan mushrooms with a splash of water 3–4 min.</li><li>Add tempeh; cook 4–5 min, turning.</li><li>Add garlic 30 sec.</li><li>Add kale + stock-water + soy; toss 2–3 min until wilted.</li></ol>
+        </div>
+      </details>
+<details class="recipe" id="tempeh-mince-tomatospinach-skillet-with-caulirice">
+        <summary><span class="rname">Tempeh Mince Tomato–Spinach Skillet with Cauli-Rice</span><span class="rtag">18 min • serves 1</span></summary>
+        <div class="rbody">
+          <h4>Ingredients</h4>
+          <ul><li>Tempeh mince 250g</li><li>Diced tomatoes 1/2 can</li><li>Spinach 2 handfuls</li><li>Minced garlic 1 tsp</li><li>Pizza sauce 2 tbsp (or pesto 1 tbsp)</li><li>Cauliflower 1/2 head (grated to ‘rice’)</li></ul>
+          <h4>Method</h4>
+          <ol><li>Grate cauliflower; microwave 3–4 min.</li><li>Pan tempeh mince 4–5 min.</li><li>Add garlic 30 sec.</li><li>Add tomatoes + pizza sauce; simmer 5–6 min.</li><li>Stir spinach 1–2 min. Serve over cauli-rice.</li></ol>
+        </div>
+      </details>
+<details class="recipe" id="garlicsoy-tofu--black-bean-bowl-with-warm-cabbage-slaw">
+        <summary><span class="rname">Garlic–Soy Tofu &amp; Black Bean Bowl (with warm cabbage slaw)</span><span class="rtag">15 min • serves 1</span></summary>
+        <div class="rbody">
+          <h4>Ingredients</h4>
+          <ul><li>Tofu 300g (cubed)</li><li>Black beans 1/2 can (rinsed)</li><li>Red cabbage 2 cups (sliced)</li><li>Minced garlic 1 tsp</li><li>Soy sauce 1 tbsp</li><li>Apple cider vinegar 1 tsp</li></ul>
+          <h4>Method</h4>
+          <ol><li>Microwave tofu 90 sec; drain.</li><li>Pan tofu 5–6 min (use splash water if needed).</li><li>Add garlic 30 sec.</li><li>Add beans + soy + 2 tbsp water; cook 2–3 min.</li><li>Toss cabbage with vinegar + 1 tsp soy; warm 1 min. Serve.</li></ol>
+        </div>
+      </details>
+<details class="recipe" id="chickpeabeet-crunch-salad-with-cottage-cheese">
+        <summary><span class="rname">Chickpea–Beet Crunch Salad with Cottage Cheese</span><span class="rtag">10 min • serves 1</span></summary>
+        <div class="rbody">
+          <h4>Ingredients</h4>
+          <ul><li>Chickpeas 1/2 can (rinsed)</li><li>Beetroot 1/2 can (chopped)</li><li>Red cabbage 1–2 cups (sliced)</li><li>Cottage cheese 200g</li><li>Apple cider vinegar 1 tsp</li></ul>
+          <h4>Method</h4>
+          <ol><li>Combine chickpeas, beetroot, cabbage.</li><li>Stir through vinegar.</li><li>Top with cottage cheese.</li></ol>
+        </div>
+      </details>
+<details class="recipe" id="10minute-lentiltomatospinach-tofu-stew">
+        <summary><span class="rname">10‑Minute Lentil–Tomato–Spinach Tofu Stew</span><span class="rtag">12 min • serves 1</span></summary>
+        <div class="rbody">
+          <h4>Ingredients</h4>
+          <ul><li>Lentils 1 can (rinsed)</li><li>Diced tomatoes 1/2 can</li><li>Tofu 200g (cubed)</li><li>Spinach 2 handfuls</li><li>Stock powder 1/2 tsp + 3/4 cup water</li><li>Minced garlic 1 tsp</li></ul>
+          <h4>Method</h4>
+          <ol><li>Simmer stock-water; add garlic.</li><li>Add lentils + tomatoes; simmer 5 min.</li><li>Add tofu; simmer 3 min.</li><li>Stir spinach 1–2 min.</li></ol>
+        </div>
+      </details>
+<details class="recipe" id="mango-jelly-protein-cheesecake-cup">
+        <summary><span class="rname">Mango Jelly Protein ‘Cheesecake’ Cup</span><span class="rtag">7 min active • serves 1</span></summary>
+        <div class="rbody">
+          <h4>Ingredients</h4>
+          <ul><li>High protein yoghurt 200g</li><li>Lite jelly 1 sachet (prepared)</li><li>Frozen mixed berries 100g</li><li>Protein powder 1/2 scoop (optional)</li></ul>
+          <h4>Method</h4>
+          <ol><li>Make jelly with slightly less water; cool 2 min.</li><li>Whisk yoghurt (+ optional protein).</li><li>Layer berries + yoghurt; pour jelly over.</li><li>Chill until set (1–2 hrs).</li></ol>
+        </div>
+      </details>
+<details class="recipe" id="microwave-chocolate-protein-brownie-mug">
+        <summary><span class="rname">Microwave Chocolate Protein Brownie Mug</span><span class="rtag">6 min • serves 1</span></summary>
+        <div class="rbody">
+          <h4>Ingredients</h4>
+          <ul><li>Chocolate protein 1 scoop</li><li>Greek yoghurt 120g</li><li>Cocoa (or shaved dark choc) 1 tsp</li><li>Baking powder 1/4 tsp</li></ul>
+          <h4>Method</h4>
+          <ol><li>Mix to thick batter in a mug.</li><li>Microwave 45–70 sec.</li><li>Rest 1 min.</li></ol>
+        </div>
+      </details>
+<details class="recipe" id="banana-protein-nicecream">
+        <summary><span class="rname">Banana Protein ‘Nice‑Cream’</span><span class="rtag">5 min • serves 1</span></summary>
+        <div class="rbody">
+          <h4>Ingredients</h4>
+          <ul><li>Frozen banana 180g</li><li>High protein yoghurt 150g</li><li>Chocolate protein 1/2 scoop</li></ul>
+          <h4>Method</h4>
+          <ol><li>Blend banana to crumbly then creamy.</li><li>Add yoghurt + protein; blend 15–30 sec.</li><li>Serve.</li></ol>
+        </div>
+      </details>
+    </div>
+  </section>
 </main>
-<footer>Note: iPhone may download HTML instead of opening it in Safari. If that happens, use the PDF version for viewing.</footer>
+
+<footer>Tip: On iPhone, open in Safari → Share → Add to Home Screen.</footer>
+
+<script>
+(function () {
+  const tabs = document.querySelectorAll('.tab');
+  const panels = {
+    plan: document.getElementById('panel-plan'),
+    shopping: document.getElementById('panel-shopping'),
+    recipes: document.getElementById('panel-recipes')
+  };
+
+  function setTab(target) {
+    tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.target === target ? 'true' : 'false'));
+    Object.keys(panels).forEach(k => panels[k].classList.toggle('active', k === target));
+    try { localStorage.setItem('mealplan_tab', target); } catch (e) {}
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => setTab(t.dataset.target)));
+  try {
+    const saved = localStorage.getItem('mealplan_tab');
+    if (saved && panels[saved]) setTab(saved);
+  } catch (e) {}
+
+  const checks = document.querySelectorAll('input[type="checkbox"][data-key]');
+  function loadChecks() {
+    checks.forEach(c => {
+      const k = 'shop_' + c.dataset.key;
+      try { c.checked = (localStorage.getItem(k) === '1'); } catch (e) {}
+    });
+  }
+  function saveCheck(el) {
+    const k = 'shop_' + el.dataset.key;
+    try { localStorage.setItem(k, el.checked ? '1' : '0'); } catch (e) {}
+  }
+  checks.forEach(c => c.addEventListener('change', () => saveCheck(c)));
+  loadChecks();
+})();
+</script>
 </body>
 </html>
